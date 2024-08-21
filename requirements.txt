@@ -3,5 +3,5 @@ langchain-community
 langchain-core
 langchain-text-splitters
 langchain-chroma
-dotenv
+python-dotenv 
 flask
