@@ -10,6 +10,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from dotenv import load_dotenv
+import requests
 
 app = Flask(__name__)
 
@@ -25,8 +26,12 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 llm = ChatOpenAI(model="gpt-3.5-turbo")
 
 # Load CSV file
-file_path = "https://raw.githubusercontent.com/dunjadakovic/RAGAPI/main/ContentAndCategories.csv"
-loader = CSVLoader(file_path=file_path)
+file_url = "https://raw.githubusercontent.com/dunjadakovic/RAGAPI/main/ContentAndCategories.csv"
+response = requests.get(file_url)
+with open("temp.csv", "wb") as f:
+    f.write(response.content)
+
+loader = CSVLoader(file_path="temp.csv")
 data = loader.load()
 # Create text splitter
 text_splitter = CharacterTextSplitter(
