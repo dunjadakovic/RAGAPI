@@ -7,15 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1iN0TJ60c4Vvd8nufimD48iNUWnL-NwWg
 """
 
-!pip install -qU langchain-openai
-!pip install langchain-community langchain-core
-!pip install -qU langchain-text-splitters
-!pip install -qU langchain-chroma
-!pip install -qU langchain-output-parsers
-!pip install -qU langchain-prompts
-!pip install -qU langchain-runnables
-!pip install dotenv
-!pip install flask
 from flask import Flask, request, jsonify, session
 import os
 import getpass
