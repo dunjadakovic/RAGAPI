@@ -100,13 +100,18 @@ def generate_sentence():
         else:
             try: 
                 result = rag_chain.invoke(level, topic)
+            except Exception as e:
+                logging.error(f'Error GENErating sentence: {e}')
+                print(e, "hiii")
+                return jsonify('Error generating sentence: {e}'), 500
+            try:
                 logging.info(f"Level: {level} Topic {Topic}")
                 return jsonify({'sentence': result})
                 session["result"] = result
                 abort(304)
             except Exception as e:
-                logging.error(f'Error GENErating sentence: {e}')
-                print(e, "hiii")
+                logging.error(f'Error GENERating sentence: {e}')
+                print(e, "hiiii")
                 return jsonify('Error generating sentence: {e}'), 500
     except Exception as e:
         logging.error(f'Error Generating sentence: {e}')
