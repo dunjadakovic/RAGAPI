@@ -70,18 +70,18 @@ def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 @app.before_request
 def generate_sentence():
+    session.permanent = True
+    if 'reset' in request.args and request.args['reset'] == 'true':
+        session.pop('result', None)  # Reset the session
+    if 'result' not in session:
+        rag_chain = (
+          {"context": retriever | format_docs, "question": RunnablePassthrough()}
+          | custom_rag_prompt
+          | llm
+          | StrOutputParser()
+        )
+    logging.info(f"Request args: {request.args}")
     try:
-        session.permanent = True
-        if 'reset' in request.args and request.args['reset'] == 'true':
-            session.pop('result', None)  # Reset the session
-        if 'result' not in session:
-            rag_chain = (
-              {"context": retriever | format_docs, "question": RunnablePassthrough()}
-              | custom_rag_prompt
-              | llm
-              | StrOutputParser()
-            )
-        logging.info(f"Request args: {request.args}")
         level = request.args.get('level')
         topic = request.args.get('topic')
         if not level or not topic:
