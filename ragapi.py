@@ -102,6 +102,8 @@ def generate_sentence():
                 result = rag_chain.invoke(level, topic)
             except Exception as e:
                 logging.error(f'Error GENErating sentence: {e}')
+                print(topic)
+                print(level)
                 print(e, "hiii")
                 return jsonify('Error generating sentence: {e}'), 500
             try:
