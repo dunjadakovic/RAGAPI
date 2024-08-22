@@ -84,17 +84,32 @@ def generate_sentence():
     try:
         level = request.args.get('level')
         topic = request.args.get('topic')
-        if not level or not topic:
-            return jsonify({'error': 'Missing level or topic'}), 400
-            abort(305)
-        else:
-            result = rag_chain.invoke(level, topic)
-            logging.info(f"Level: {level} Topic {Topic}")
-            return jsonify({'sentence': result})
-            session["result"] = result
-            abort(304)
     except Exception as e:
         logging.error(f'Error generating sentence: {e}')
+        print(e, "hii")
+        return jsonify('Error generating sentence: {e}'), 500
+    try:
+        if not level or not topic:
+            try: 
+                return jsonify({'error': 'Missing level or topic'}), 400
+                abort(305)   
+            except Exception as e:
+                logging.error(f'Error GENerating sentence: {e}')
+                print(e, "hi")
+                return jsonify('Error generating sentence: {e}'), 500
+        else:
+            try: 
+                result = rag_chain.invoke(level, topic)
+                logging.info(f"Level: {level} Topic {Topic}")
+                return jsonify({'sentence': result})
+                session["result"] = result
+                abort(304)
+            except Exception as e:
+                logging.error(f'Error GENErating sentence: {e}')
+                print(e, "hiii")
+                return jsonify('Error generating sentence: {e}'), 500
+    except Exception as e:
+        logging.error(f'Error Generating sentence: {e}')
         print(e)
         return jsonify('Error generating sentence: {e}'), 500
 @app.route('/api/get_sentence', methods=['GET'])
