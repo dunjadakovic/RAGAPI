@@ -70,32 +70,33 @@ def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 @app.before_request
 def generate_sentence():
-    session.permanent = True
-    if 'reset' in request.args and request.args['reset'] == 'true':
-        session.pop('result', None)  # Reset the session
-    if 'result' not in session:
-        rag_chain = (
-          {"context": retriever | format_docs, "question": RunnablePassthrough()}
-          | custom_rag_prompt
-          | llm
-          | StrOutputParser()
-        )
+    try:
+        session.permanent = True
+        if 'reset' in request.args and request.args['reset'] == 'true':
+            session.pop('result', None)  # Reset the session
+        if 'result' not in session:
+            rag_chain = (
+              {"context": retriever | format_docs, "question": RunnablePassthrough()}
+              | custom_rag_prompt
+              | llm
+              | StrOutputParser()
+            )
         logging.info(f"Request args: {request.args}")
-        try:
-            level = request.args.get('level')
-            topic = request.args.get('topic')
-            if not level or not topic:
-                return jsonify({'error': 'Missing level or topic'}), 400
-                abort(305)
-            else:
-                result = rag_chain.invoke(level, topic)
-                logging.info(f"Level: {level} Topic {Topic}")
-                return jsonify({'sentence': result})
-                session["result"] = result
-                abort(304)
-        except Exception as e:
-            logging.error(f'Error generating sentence: {e}')
-            return jsonify('Error generating sentence: {e}'), 500
+        level = request.args.get('level')
+        topic = request.args.get('topic')
+        if not level or not topic:
+            return jsonify({'error': 'Missing level or topic'}), 400
+            abort(305)
+        else:
+            result = rag_chain.invoke(level, topic)
+            logging.info(f"Level: {level} Topic {Topic}")
+            return jsonify({'sentence': result})
+            session["result"] = result
+            abort(304)
+    except Exception as e:
+        logging.error(f'Error generating sentence: {e}')
+        print(e)
+        return jsonify('Error generating sentence: {e}'), 500
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
     result = session.get("result")
