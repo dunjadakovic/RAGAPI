@@ -93,7 +93,7 @@ def generate_sentence():
                 abort(304)
         except Exception as e:
             logging.error(f'Error generating sentence: {e}')
-            return jsonify({'error': 'Internal Server Error'}), 500
+            return jsonify({e}), 500
             abort(306)
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
