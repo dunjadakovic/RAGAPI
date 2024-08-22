@@ -80,6 +80,7 @@ def generate_sentence():
           | llm
           | StrOutputParser()
         )
+        logging.info(f"Request args: {request.args}")
         try:
             level = request.args.get('level')
             topic = request.args.get('topic')
@@ -88,13 +89,13 @@ def generate_sentence():
                 abort(305)
             else:
                 result = rag_chain.invoke(level, topic)
+                logging.info(f"Level: {level} Topic {Topic}")
                 return jsonify({'sentence': result})
                 session["result"] = result
                 abort(304)
         except Exception as e:
             logging.error(f'Error generating sentence: {e}')
-            return jsonify({e}), 500
-            abort(306)
+            return jsonify('Error generating sentence: {e}'), 500
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
     result = session.get("result")
