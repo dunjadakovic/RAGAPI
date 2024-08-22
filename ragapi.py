@@ -74,16 +74,6 @@ def generate_sentence():
     if 'reset' in request.args and request.args['reset'] == 'true':
         session.pop('result', None)  # Reset the session
     if 'result' not in session:
-        try:
-            level = request.args.get('level')
-            topic = request.args.get('topic')
-            if not level or not topic:
-                return jsonify({'error': 'Missing level or topic'}), 400
-            result = rag_chain.invoke(level, topic)
-            return jsonify({'sentence': result})
-        except Exception as e:
-            logging.error(f'Error generating sentence: {e}')
-            return jsonify({'error': 'Internal Server Error'}), 500
         rag_chain = (
           {"context": retriever | format_docs, "question": RunnablePassthrough()}
           | custom_rag_prompt
@@ -91,7 +81,18 @@ def generate_sentence():
           | StrOutputParser()
         )
         result = rag_chain.invoke(level, topic)
-        session["result"] = result
+        try:
+            level = request.args.get('level')
+            topic = request.args.get('topic')
+            if not level or not topic:
+                return jsonify({'error': 'Missing level or topic'}), 400
+            else:
+                result = rag_chain.invoke(level, topic)
+                return jsonify({'sentence': result})
+                session["result"] = result
+        except Exception as e:
+            logging.error(f'Error generating sentence: {e}')
+            return jsonify({'error': 'Internal Server Error'}), 500
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
     result = session.get("result")
