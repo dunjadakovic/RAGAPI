@@ -73,7 +73,7 @@ def generate_sentence():
     if 'reset' in request.args and request.args['reset'] == 'true':
         session.pop('result', None)  # Reset the session
     if 'result' not in session:
-         try:
+        try:
             level = request.args.get('level')
             topic = request.args.get('topic')
             if not level or not topic:
