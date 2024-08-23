@@ -55,10 +55,9 @@ template = """Use the following pieces of context to answer the question at the 
 Use as many of the provided words as possible to make a sentence. Make sure the sentences are child-safe and appropriate.
 Don't say anything that isn't a direct part of your answer. Write three sentences. Furthermore, please take out one word
 from the sentence that is also in the provided list. Replace it with ______. Then, separate the next part from the sentence
-with a newline (\n) and then provide the word you replaced and two additional words of the same syntactic category that are
-also in the provided list. If the word is a verb, make sure all the verbs are conjugated appropriately. Alternatively, if the chosen
-word is a verb, you can also put the same word in three types of conjugations or spellings. Make sure the three words are comma separated.
-Do not write any more sentences than that
+with a newline (\n). Then take the word that you replaced with ______ and add two other words separated by comma. The two other
+words have to be in the same semantic/syntactic category as the replaced word but must show some differences.
+Do not provide anymore than that sentence and those three words.
 {context}
 
 Question: {question}
