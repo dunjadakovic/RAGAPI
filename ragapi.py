@@ -98,8 +98,9 @@ def generate_sentence():
                 print(e, "hi")
                 return jsonify('Error generating sentence: {e}'), 500
         else:
-            try: 
-                result = rag_chain.invoke(level, topic)
+            try:
+                stringConcat = level + "," + topic
+                result = rag_chain.invoke(stringConcat)
             except Exception as e:
                 logging.error(f'Error GENErating sentence: {e}')
                 print(topic)
