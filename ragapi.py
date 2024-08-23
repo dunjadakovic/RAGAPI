@@ -18,7 +18,7 @@ app = Flask(__name__)
 # Set API key for OpenAI usage
 
 app.config["SECRET_KEY"] = os.urandom(24)
-app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 load_dotenv()
 
@@ -64,62 +64,30 @@ Question: {question}
 
 Helpful Answer:"""
 custom_rag_prompt = PromptTemplate.from_template(template)
-
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
-@app.before_request
+rag_chain = (
+      {"context": retriever | format_docs, "question": RunnablePassthrough()}
+      | custom_rag_prompt
+      | llm
+      | StrOutputParser()
+    )
+
+@app.before_first_request
 def generate_sentence():
-    session.permanent = True
-    if 'reset' in request.args and request.args['reset'] == 'true':
-        session.pop('result', None)  # Reset the session
-    if 'result' not in session:
-        rag_chain = (
-          {"context": retriever | format_docs, "question": RunnablePassthrough()}
-          | custom_rag_prompt
-          | llm
-          | StrOutputParser()
-        )
-        logging.info(f"Request args: {request.args}")
-        try:
-            level = request.args.get('level')
-            topic = request.args.get('topic')
-        except Exception as e:
-            logging.error(f'Error generating sentence: {e}')
-            print(e, "hii")
-            return jsonify('Error generating sentence: {e}'), 500
-        try:
-            if not level or not topic:
-                try: 
-                    return jsonify({'error': 'Missing level or topic'}), 400
-                    abort(305)   
-                except Exception as e:
-                    logging.error(f'Error GENerating sentence: {e}')
-                    print(e, "hi")
-                    return jsonify('Error generating sentence: {e}'), 500
-            else:
-                try:
-                    stringConcat = level + "," + topic
-                    result = rag_chain.invoke(stringConcat)
-                except Exception as e:
-                    logging.error(f'Error GENErating sentence: {e}')
-                    print(topic)
-                    print(level)
-                    print(e, "hiii")
-                    return jsonify('Error generating sentence: {e}'), 500
-                try:
-                    logging.info(f"Level: {level} Topic {topic}")
-                    return jsonify({'sentence': result})
-                    session["result"] = result
-                except Exception as e:
-                    logging.error(f'Error GENERating sentence: {e}')
-                    print(e, "hiiii")
-                    return jsonify('Error generating sentence: {e}'), 500
-        except Exception as e:
-            logging.error(f'Error Generating sentence: {e}')
-            print(e)
-            return jsonify('Error generating sentence: {e}'), 500
+    level = request.args.get('level')
+    topic = request.args.get('topic')
+    if not level or not topic:
+        return jsonify({'error': 'Missing level or topic'}), 400  
+    else:
+        stringConcat = level + "," + topic
+        result = rag_chain.invoke(stringConcat)
+        logging.info(f"Level: {level} Topic {topic}")
+        return jsonify({'sentence': result})
+        session["result"] = result 
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
+    print(result)
     result = session.get("result")
     if result:
       resultList = result.split("\n")
@@ -157,6 +125,18 @@ def getOption3():
         return jsonify({resultOption3})
   else:
         return jsonify({"error": "No result found, please check internet connection"}), 404
+@app.route('/api/regenerate', methods=['GET'])
+def generate_sentence():
+    level = request.args.get('level')
+    topic = request.args.get('topic')
+    if not level or not topic:
+        return jsonify({'error': 'Missing level or topic'}), 400  
+    else:
+        stringConcat = level + "," + topic
+        result = rag_chain.invoke(stringConcat)
+        logging.info(f"Level: {level} Topic {topic}")
+        return jsonify({'sentence': result})
+        session["result"] = result 
 if __name__ == '__main__':
     app.run(debug=True)
 
