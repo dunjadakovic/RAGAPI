@@ -119,7 +119,7 @@ def generate_sentence():
         stringConcat = level + "," + topic
         resultChain = rag_chain.invoke(stringConcat)
         logging.info(f"Level: {level} Topic {topic}")
-        return jsonify({'sentence': result})
+        return jsonify({'sentence': resultChain})
         result = resultChain
 if __name__ == '__main__':
     app.run(debug=True)
