@@ -77,7 +77,7 @@ def getSentence():
     if result:
       resultList = result.split("\n")
       resultSentence = resultList[0]
-      return jsonify({str(resultSentence)})
+      return jsonify(resultSentence)
     else:
       return jsonify({'error': 'No result found, please check internet connection'}), 404
 @app.route('/api/option1', methods=['GET'])
@@ -87,7 +87,7 @@ def getOption1():
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
         resultOption1 = resultOptions[0]
-        return jsonify({str(resultOption1)})
+        return jsonify(resultOption1)
   else:
       return jsonify({"error": "No result found, please check internet connection"}), 404
 @app.route('/api/option2', methods=['GET'])
@@ -97,7 +97,7 @@ def getOption2():
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
         resultOption2 = resultOptions[1]
-        return jsonify({str(resultOption2)})
+        return jsonify(resultOption2)
   else:
         return jsonify({"error": "No result found, please check internet connection"}), 404
 @app.route('/api/option3', methods=['GET'])
@@ -107,7 +107,7 @@ def getOption3():
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
         resultOption3 = resultOptions[2]
-        return jsonify({str(resultOption3)})
+        return jsonify(resultOption3)
   else:
         return jsonify({"error": "No result found, please check internet connection"}), 404
 @app.route('/api/regenerate', methods=['GET'])
