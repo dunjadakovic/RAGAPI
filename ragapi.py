@@ -119,6 +119,8 @@ def generate_sentence():
     else:
         stringConcat = level + "," + topic
         resultChain = rag_chain.invoke(stringConcat)
+        while "_" not in resultChain:
+            resultChain = rag_chain.invoke(stringConcat)
         logging.info(f"Level: {level} Topic {topic}")
         resp = jsonify({'sentence': resultChain})
         resp.set_cookie('result', resultChain, max_age=60)
