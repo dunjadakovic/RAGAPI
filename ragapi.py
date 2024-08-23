@@ -75,7 +75,6 @@ rag_chain = (
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
     print(result)
-    result = session.get("result")
     if result:
       resultList = result.split("\n")
       resultSentence = resultList[0]
@@ -84,7 +83,6 @@ def getSentence():
       return jsonify({'error': 'No result found, please check internet connection'}), 404
 @app.route('/api/option1', methods=['GET'])
 def getOption1():
-  result = session.get("result")
   if result:
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
@@ -94,7 +92,6 @@ def getOption1():
       return jsonify({"error": "No result found, please check internet connection"}), 404
 @app.route('/api/option2', methods=['GET'])
 def getOption2():
-  result = session.get("result")
   if result:
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
@@ -104,7 +101,6 @@ def getOption2():
         return jsonify({"error": "No result found, please check internet connection"}), 404
 @app.route('/api/option3', methods=['GET'])
 def getOption3():
-  result = session.get("result")
   if result:
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
@@ -120,10 +116,10 @@ def generate_sentence():
         return jsonify({'error': 'Missing level or topic'}), 400  
     else:
         stringConcat = level + "," + topic
-        result = rag_chain.invoke(stringConcat)
+        resultChain = rag_chain.invoke(stringConcat)
         logging.info(f"Level: {level} Topic {topic}")
         return jsonify({'sentence': result})
-        session["result"] = result 
+        global result = resultChain 
 if __name__ == '__main__':
     app.run(debug=True)
 
