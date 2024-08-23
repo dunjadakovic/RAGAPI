@@ -108,10 +108,9 @@ def generate_sentence():
                 print(e, "hiii")
                 return jsonify('Error generating sentence: {e}'), 500
             try:
-                logging.info(f"Level: {level} Topic {Topic}")
+                logging.info(f"Level: {level} Topic {topic}")
                 return jsonify({'sentence': result})
                 session["result"] = result
-                abort(304)
             except Exception as e:
                 logging.error(f'Error GENERating sentence: {e}')
                 print(e, "hiiii")
