@@ -72,6 +72,7 @@ rag_chain = (
       | llm
       | StrOutputParser()
     )
+global result
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
     print(result)
@@ -119,7 +120,6 @@ def generate_sentence():
         resultChain = rag_chain.invoke(stringConcat)
         logging.info(f"Level: {level} Topic {topic}")
         return jsonify({'sentence': result})
-        global result
         result = resultChain
 if __name__ == '__main__':
     app.run(debug=True)
