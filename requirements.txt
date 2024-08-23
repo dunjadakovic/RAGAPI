@@ -6,3 +6,4 @@ langchain-chroma
 python-dotenv 
 gunicorn
 flask
+Flask-Caching
