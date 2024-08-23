@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, session
-from flask-cache import Cache 
+from flask_caching import Cache 
 import os
 import getpass
 from langchain_openai import ChatOpenAI
