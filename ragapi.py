@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, session
+from flask-cache import Cache 
 import os
 import getpass
 from langchain_openai import ChatOpenAI
@@ -18,8 +19,8 @@ app = Flask(__name__)
 # Set API key for OpenAI usage
 
 app.config["SECRET_KEY"] = os.urandom(24)
-app.config["SESSION_PERMANENT"] = True
-app.config["SESSION_TYPE"] = "filesystem"
+app.config['CACHE_TYPE'] = 'SimpleCache'
+cache = Cache(app)
 load_dotenv()
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -72,9 +73,9 @@ rag_chain = (
       | llm
       | StrOutputParser()
     )
-global result
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
+    result = cache.get('result')
     print(result)
     if result:
       resultList = result.split("\n")
@@ -84,6 +85,7 @@ def getSentence():
       return jsonify({'error': 'No result found, please check internet connection'}), 404
 @app.route('/api/option1', methods=['GET'])
 def getOption1():
+  result = cache.get('result')
   if result:
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
@@ -93,6 +95,7 @@ def getOption1():
       return jsonify({"error": "No result found, please check internet connection"}), 404
 @app.route('/api/option2', methods=['GET'])
 def getOption2():
+  result = cache.get('result')
   if result:
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
@@ -102,6 +105,7 @@ def getOption2():
         return jsonify({"error": "No result found, please check internet connection"}), 404
 @app.route('/api/option3', methods=['GET'])
 def getOption3():
+  result = cache.get('result')
   if result:
         resultList = result.split("\n")
         resultOptions = resultList[1].split(",")
@@ -120,7 +124,7 @@ def generate_sentence():
         resultChain = rag_chain.invoke(stringConcat)
         logging.info(f"Level: {level} Topic {topic}")
         return jsonify({'sentence': resultChain})
-        result = resultChain
+        cache.set('result', resultChain, timeout=10000)
 if __name__ == '__main__':
     app.run(debug=True)
 
