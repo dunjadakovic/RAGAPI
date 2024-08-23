@@ -19,7 +19,8 @@ app = Flask(__name__)
 # Set API key for OpenAI usage
 
 app.config["SECRET_KEY"] = os.urandom(24)
-app.config['CACHE_TYPE'] = 'SimpleCache'
+app.config["CACHE_TYPE"] = "RedisCache"
+app.config["CACHE_REDIS_URL"] = "redis://localhost:6379/0"
 cache = Cache(app)
 load_dotenv()
 
