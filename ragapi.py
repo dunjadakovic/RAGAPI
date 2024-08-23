@@ -124,7 +124,7 @@ def generate_sentence():
         resultChain = rag_chain.invoke(stringConcat)
         logging.info(f"Level: {level} Topic {topic}")
         return jsonify({'sentence': resultChain})
-        cache.set('result', resultChain, timeout=10000)
+        cache.set('result', resultChain, timeout=60)
 if __name__ == '__main__':
     app.run(debug=True)
 
