@@ -72,17 +72,6 @@ rag_chain = (
       | llm
       | StrOutputParser()
     )
-
-level = request.args.get('level')
-topic = request.args.get('topic')
-if not level or not topic:
-    return jsonify({'error': 'Missing level or topic'}), 400  
-else:
-    stringConcat = level + "," + topic
-    result = rag_chain.invoke(stringConcat)
-    logging.info(f"Level: {level} Topic {topic}")
-    return jsonify({'sentence': result})
-    session["result"] = result 
 @app.route('/api/get_sentence', methods=['GET'])
 def getSentence():
     print(result)
