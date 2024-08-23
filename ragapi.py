@@ -52,12 +52,12 @@ retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k
 
 # Define prompt template
 template = """Use the following pieces of context to answer the question at the end.
-Use as many of the provided words as possible to make a sentence. Make sure the sentences are child-safe and appropriate.
-Don't say anything that isn't a direct part of your answer. Write three sentences. Furthermore, please take out one word
-from the sentence that is also in the provided list. Replace it with ______. Then, separate the next part from the sentence
-with a newline (\n). Then take the word that you replaced with ______ and add two other words separated by comma. The two other
-words have to be in the same semantic/syntactic category as the replaced word but must show some differences.
-Do not provide anymore than that sentence and those three words.
+Use as many of the provided words as possible to make a sentence. Make sure the sentence is child-safe and appropriate.
+Don't say anything that isn't a direct part of your answer. Take out one word from the sentence. The word must be in the provided list. 
+Replace it with ______. Then, separate the next part from the sentence
+with a newline (\n). Take the word you replaced with ______ and add two other words separated by comma. The two other
+words have to be in a similar semantic/syntactic category as the replaced word but must show some small differences.
+Provide the sentence, then a newline (\n) and then the three words as described. Do not provide anything else. 
 {context}
 
 Question: {question}
