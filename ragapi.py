@@ -51,7 +51,7 @@ retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k
 
 # Define prompt template
 template = """Use the following pieces of context to answer the question at the end.
-Use as many of the provided words as possible to make a sentence. Make sure the sentence is child-safe and appropriate.
+Use as many of the provided words as possible to make a sentence. The sentence has to be exactly 5 words long. Make sure the sentence is child-safe and appropriate.
 Don't say anything that isn't a direct part of your answer. Take out one word from the sentence. The word must be in the provided list. 
 Replace it with ______. Then, separate the next part from the sentence
 with a newline (\n). Take the word you replaced with ______ and add two other words separated by comma. The two other
